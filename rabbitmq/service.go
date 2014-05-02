@@ -1,7 +1,7 @@
 package rabbitmq
 
 import (
-	"bitbucket.org/michaljemala/cf-service-broker/broker"
+	"github.com/nimbus-cloud/cf-service-broker/broker"
 	"fmt"
 	"log"
 )

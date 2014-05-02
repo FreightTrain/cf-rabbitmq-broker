@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bitbucket.org/michaljemala/cf-service-broker/broker"
-	"bitbucket.org/michaljemala/cf-service-broker/rabbitmq"
+	"github.com/nimbus-cloud/cf-service-broker/broker"
+	"github.com/nimbus-cloud/cf-service-broker/rabbitmq"
 	"flag"
 	"fmt"
 	"log"
