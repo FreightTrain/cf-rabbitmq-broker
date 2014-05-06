@@ -108,7 +108,7 @@ func (b *rabbitService) Bind(br broker.BindingRequest) (broker.Credentials, stri
 	amqpUrl := fmt.Sprintf("amqp://%v:%v@%v:%v/%v", username, password, b.opts.Host, b.opts.Port, vhost)
 	log.Printf("Service: AMQP URL generated: [%v]", amqpUrl)
 
-	return broker.Credentials{"uri": amqpUrl}, "", nil
+	return broker.Credentials{"uri": amqpUrl, "host": b.opts.Host}, "", nil
 }
 
 func (b *rabbitService) Unbind(br broker.BindingRequest) error {
