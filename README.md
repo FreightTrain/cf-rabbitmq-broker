@@ -8,7 +8,7 @@ mkdir ~/go
 export GOPATH=~/go
 export PATH=$GOPATH/bin:$PATH
 
-go get -v github.com/cloudfoundry-incubator/spiff
+go get -v github.com/nimbus-cloud/cf-rabbitmq-broker
 ```
 
 Start it somewhere, paying attention to the mandatory CLI parameters:
@@ -32,5 +32,5 @@ cf push rabbit-test
 cf create-service-broker rabbitmq <broker auth user> <broker auth pass> http://<broker ip>:9999
 cf create-service RabbitMQ "Simple RabbitMQ Plan" rabbitmq-simple
 cf bind-service rabbit-test rabbitmq-simple
-cf push
+cf push rabbit-test
 ```
