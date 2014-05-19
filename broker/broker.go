@@ -1,7 +1,6 @@
 package broker
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -23,9 +22,23 @@ func (b *broker) Start() {
 
 	errCh := make(chan error, 1)
 	go func() {
-		addr := fmt.Sprintf("%v:%v", b.opts.Host, b.opts.Port)
-		log.Printf("Broker started: Listening at [%v]", addr)
-		errCh <- http.ListenAndServe(addr, b.router)
+		//appEnv, _ := cfenv.Current()
+		//var appHost string
+		//var appPort int
+		//if appEnv.Host != "" {
+		//	appHost = appEnv.Host
+		//} else {
+		//		appHost = b.opts.Host
+		//	}
+		//		if appEnv.Port != 0 {
+		//			appPort = appEnv.Port
+		//		} else {
+		//			appPort = b.opts.Port
+		//		}
+		//		addr := fmt.Sprintf("%v:%v", os.Getenv("HOST")Host, appEnv.Port)
+		//		log.Printf("Broker started: Listening at [%v]", addr)
+		log.Printf("Broker started: " + os.Getenv("HOST") + ":" + os.Getenv("PORT"))
+		errCh <- http.ListenAndServe(":"+os.Getenv("PORT"), b.router)
 	}()
 
 	select {
