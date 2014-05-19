@@ -17,7 +17,7 @@ type BrokerService interface {
 	// Binds to specified service instance.
 	// Returns  credentials necessary to establish connection to this
 	// service instance as well as optional syslog drain URL.
-	Bind(BindingRequest) (Credentials, string, error)
+	Bind(BindingRequest) (string, Credentials, string, error)
 
 	// Removes created binding.
 	Unbind(BindingRequest) error

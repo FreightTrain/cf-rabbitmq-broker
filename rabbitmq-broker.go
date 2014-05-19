@@ -1,15 +1,17 @@
 package main
 
 import (
-	"github.com/nimbus-cloud/cf-service-broker/broker"
-	"github.com/nimbus-cloud/cf-service-broker/rabbitmq"
+	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/nimbus-cloud/cf-rabbitmq-broker/broker"
+	"github.com/nimbus-cloud/cf-rabbitmq-broker/rabbitmq"
+	"io/ioutil"
 	"log"
 	"os"
 )
 
-const version = "1.0.0"
+const version = "1.0.1"
 
 func init() {
 	flag.BoolVar(&showHelp, "help", false, "")
@@ -27,19 +29,39 @@ func main() {
 		Version()
 	}
 
-	brokerService, err := rabbitmq.New(rabbitmq.Opts)
-	if err != nil {
-		log.Fatal(err)
+	configFile := flag.Args()[0]
+	file, e := ioutil.ReadFile(configFile)
+	if e != nil {
+		fmt.Printf("Cannot read config file '%v'; %v\n", configFile, e)
+		os.Exit(1)
 	}
 
-	broker := broker.New(broker.Opts, brokerService)
+	configJson := map[string]map[string]interface{}{}
+	err := json.Unmarshal(file, &configJson)
+	if err != nil {
+		fmt.Printf("Cannot parse JSON in '%v'", configFile)
+		os.Exit(1)
+	}
+
+	rabbitmq.PopulateOptions(configJson["rabbitmq"])
+	broker.PopulateOptions(configJson["broker"])
+
+	brokerServices := make([]broker.BrokerService, len(rabbitmq.Opts.Zones))
+	fmt.Sprintf("%v", len(rabbitmq.Opts.Zones))
+	for k, zoneData := range rabbitmq.Opts.Zones {
+		brokerService, err := rabbitmq.New(zoneData)
+		if err != nil {
+			log.Fatal(err)
+		}
+		brokerServices[k] = brokerService
+	}
+
+	broker := broker.New(broker.Opts, brokerServices)
 	broker.Start()
 }
 
 func Usage() {
 	fmt.Print(versionStr)
-	fmt.Print(broker.UsageStr)
-	fmt.Print(rabbitmq.UsageStr)
 	fmt.Print(usageStr)
 	os.Exit(0)
 }
@@ -54,6 +76,7 @@ var (
 RabbitMQ Service Broker v%v
 `, version)
 	usageStr = `
+cf-rabbitmq-broker [config.json path]
 Common Options:
         --help                         Show this message
         --version                      Show service broker version

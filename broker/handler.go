@@ -10,10 +10,10 @@ import (
 var empty struct{} = struct{}{}
 
 type handler struct {
-	brokerService BrokerService
+	brokerServices []BrokerService
 }
 
-func newHandler(bs BrokerService) *handler {
+func newHandler(bs []BrokerService) *handler {
 	return &handler{bs}
 }
 
@@ -21,7 +21,7 @@ func (h *handler) catalog(r *http.Request) responseEntity {
 
 	log.Printf("Handler: Requesting catalog")
 
-	if cat, err := h.brokerService.Catalog(); err != nil {
+	if cat, err := h.brokerServices[0].Catalog(); err != nil {
 		return handleServiceError(err)
 	} else {
 		log.Printf("Handler: Catalog retrieved")
@@ -42,9 +42,14 @@ func (h *handler) provision(req *http.Request) responseEntity {
 
 	log.Printf("Handler: Provisioning request decoded: %v", preq)
 
-	url, err := h.brokerService.Provision(preq)
-	if err != nil {
-		return handleServiceError(err)
+	var url string
+	var err error
+
+	for _, brokerService := range h.brokerServices {
+		url, err = brokerService.Provision(preq)
+		if err != nil {
+			return handleServiceError(err)
+		}
 	}
 
 	log.Printf("Handler: Provisioned: %v", preq)
@@ -60,8 +65,10 @@ func (h *handler) deprovision(req *http.Request) responseEntity {
 
 	log.Printf("Handler: Deprovisioning: %v", preq)
 
-	if err := h.brokerService.Deprovision(preq); err != nil {
-		return handleServiceError(err)
+	for _, brokerService := range h.brokerServices {
+		if err := brokerService.Deprovision(preq); err != nil {
+			return handleServiceError(err)
+		}
 	}
 
 	log.Printf("Handler: Deprovisioned: %v", preq)
@@ -81,9 +88,18 @@ func (h *handler) bind(req *http.Request) responseEntity {
 
 	log.Printf("Handler: Binding request decoded: %v", breq)
 
-	cred, url, err := h.brokerService.Bind(breq)
-	if err != nil {
-		return handleServiceError(err)
+	zoneCreds := make(map[string]Credentials)
+	var zone string
+	var url string
+	var cred Credentials
+	var err error
+
+	for _, brokerService := range h.brokerServices {
+		zone, cred, url, err = brokerService.Bind(breq)
+		if err != nil {
+			return handleServiceError(err)
+		}
+		zoneCreds[zone] = cred
 	}
 
 	log.Printf("Handler: Bound: %v", breq)
@@ -91,7 +107,7 @@ func (h *handler) bind(req *http.Request) responseEntity {
 	return responseEntity{http.StatusCreated, struct {
 		Credentials    interface{} `json:"credentials"`
 		SyslogDrainUrl string      `json:"syslog_drain_url "`
-	}{cred, url}}
+	}{zoneCreds, url}}
 }
 
 func (h *handler) unbind(req *http.Request) responseEntity {
@@ -100,8 +116,10 @@ func (h *handler) unbind(req *http.Request) responseEntity {
 
 	log.Printf("Handler: Unbinding: %v", breq)
 
-	if err := h.brokerService.Unbind(breq); err != nil {
-		return handleServiceError(err)
+	for _, brokerService := range h.brokerServices {
+		if err := brokerService.Unbind(breq); err != nil {
+			return handleServiceError(err)
+		}
 	}
 
 	log.Printf("Handler: Unbound: %v", breq)

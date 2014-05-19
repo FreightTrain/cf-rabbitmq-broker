@@ -13,7 +13,7 @@ type broker struct {
 	router *router
 }
 
-func New(o Options, bs BrokerService) *broker {
+func New(o Options, bs []BrokerService) *broker {
 	return &broker{o, newRouter(o, newHandler(bs))}
 }
 

@@ -1,10 +1,11 @@
 package rabbitmq
 
 import (
-	"github.com/nimbus-cloud/cf-service-broker/broker"
 	"errors"
 	"fmt"
-	"github.com/michaelklishin/rabbit-hole"
+	"github.com/mitchellh/mapstructure"
+	"github.com/nimbus-cloud/cf-rabbitmq-broker/broker"
+	"github.com/nimbus-cloud/rabbit-hole"
 	"net/http"
 )
 
@@ -87,7 +88,7 @@ func (a *rabbitAdmin) createUser(username, password string) error {
 	settings := rabbithole.UserSettings{
 		Name:     username,
 		Password: password,
-		Tags:     "management",
+		Tags:     "management, policymaker, monitoring",
 	}
 	resp, err := a.client.PutUser(username, settings)
 	if err != nil {
@@ -107,6 +108,26 @@ func (a *rabbitAdmin) deleteUser(username string) error {
 func (a *rabbitAdmin) grantAllPermissionsIn(username, vhostname string) error {
 	unlimited := rabbithole.Permissions{".*", ".*", ".*"}
 	resp, err := a.client.UpdatePermissionsIn(vhostname, username, unlimited)
+	if err != nil {
+		return &rabbitAdminError{broker.ErrCodeOther, err}
+	}
+	return checkResponseAndClose(resp)
+}
+
+func (a *rabbitAdmin) setFederationUpstream(vhost string, upstreamName string, fOpts map[string]interface{}) error {
+	var fDef rabbithole.FederationDefinition
+	err := mapstructure.Decode(fOpts, &fDef)
+	resp, err := a.client.PutFederationUpstream(vhost, upstreamName, fDef)
+	if err != nil {
+		return &rabbitAdminError{broker.ErrCodeOther, err}
+	}
+	return checkResponseAndClose(resp)
+}
+
+func (a *rabbitAdmin) setFederationPolicy(vhost string, policyName string, pOpts map[string]interface{}) error {
+	var pDef rabbithole.Policy
+	err := mapstructure.Decode(pOpts, &pDef)
+	resp, err := a.client.PutPolicy(vhost, policyName, pDef)
 	if err != nil {
 		return &rabbitAdminError{broker.ErrCodeOther, err}
 	}

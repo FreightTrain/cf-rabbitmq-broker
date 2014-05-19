@@ -1,0 +1,39 @@
+{
+    "broker": {
+        "host": "0.0.0.0",
+        "port": 9998,
+        "username": "xxx",
+        "password": "yyy"
+        "debug": true,
+        "logFile": "",
+        "trace": false,
+        "pidFile": ""
+    },
+    "rabbitmq": {
+        "catalog": "",
+        "zones": [
+           {
+                "name": "dc1",
+                "host": "xxx.xxx.xxx.xxx",
+                "port": 5672,
+                "mgmtHost": "xxx.xxx.xxx.xxx",
+                "mgmtPort": 15672,
+                "mgmtUser": "xxx",
+                "mgmtPass": "xxx",
+                "trace": false
+            },
+            {
+                "name": "dc2",
+                "host": "yyy.yyy.yyy.yyy",
+                "port": 5672,
+                "mgmtHost": "yyy.yyy.yyy.yyy",
+                "mgmtPort": 15672,
+                "mgmtUser": "yyy",
+                "mgmtPass": "yyy",
+                "trace": false
+            }
+        ]
+    }
+}
+
+
