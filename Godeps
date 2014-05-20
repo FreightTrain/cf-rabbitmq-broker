@@ -1,0 +1,26 @@
+{
+	"ImportPath": "github.com/nimbus-cloud/cf-rabbitmq-broker",
+	"GoVersion": "go1.2",
+	"Deps": [
+        {
+            "ImportPath": "github.com/nimbus-cloud/cf-rabbitmq-broker/broker",
+            "Rev": "34a1d45fa687bb4c1309efd08bdc3539dd8e63ac"
+        },
+		{
+			"ImportPath": "github.com/gorilla/context",
+			"Rev": "1be7a086a5fd6440ef16fe96baeda0c78282b980"
+		},
+		{
+			"ImportPath": "github.com/gorilla/mux",
+			"Rev": "270c42505a11c779b5a5aaecfa5ec717adac996e"
+		},
+		{
+			"ImportPath": "github.com/mitchellh/mapstructure",
+			"Rev": "6fb2c832bcac61d01212ab1d172f7a14a8585b07"
+		},
+		{
+			"ImportPath": "github.com/nimbus-cloud/rabbit-hole",
+			"Rev": "13341bee4a12b5daa4e564f9867792292829b19d"
+		}
+	]
+}

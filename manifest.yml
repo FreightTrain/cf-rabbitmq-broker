@@ -1,0 +1,8 @@
+---
+applications:
+- name: rabbit-broker
+  memory: 128M
+  instances: 8
+  host: rabbit-broker
+  path: .
+  buildpack: https://github.com/michaljemala/cloudfoundry-buildpack-go.git
