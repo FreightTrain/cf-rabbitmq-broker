@@ -39,15 +39,15 @@ func (b *RabbitService) Catalog() (broker.Catalog, error) {
 		Services: []broker.Service{
 			broker.Service{
 				Id:          "rabbitmq",
-				Name:        "RabbitMQ",
+				Name:        "rabbitmq",
 				Description: "RabbitMQ Message Broker",
 				Bindable:    true,
 				Tags:        []string{"rabbitmq", "messaging"},
 				Plans: []broker.Plan{
 					broker.Plan{
-						Id:          "simple",
-						Name:        "Simple RabbitMQ Plan",
-						Description: "Simple RabbitMQ plan represented as a unique broker's vhost.",
+						Id:          "default",
+						Name:        "default",
+						Description: "Default RabbitMQ plan represented as a unique broker's vhost.",
 					},
 				},
 			},
