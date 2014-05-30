@@ -6,7 +6,7 @@ package rabbitmq
 
 import (
 	"fmt"
-	"github.com/nimbus-cloud/cf-rabbitmq-broker/broker"
+	"github.com/FreightTrain/cf-rabbitmq-broker/broker"
 	"log"
 )
 

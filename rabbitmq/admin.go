@@ -8,7 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/mitchellh/mapstructure"
-	"github.com/nimbus-cloud/cf-rabbitmq-broker/broker"
+	"github.com/FreightTrain/cf-rabbitmq-broker/broker"
 	"github.com/nimbus-cloud/rabbit-hole"
 	"net/http"
 )

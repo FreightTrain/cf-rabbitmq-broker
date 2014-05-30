@@ -18,7 +18,7 @@ mkdir ~/go
 export GOPATH=~/go
 export PATH=$GOPATH/bin:$PATH
 
-go get -v github.com/nimbus-cloud/cf-rabbitmq-broker
+go get -v github.com/FreightTrain/cf-rabbitmq-broker
 ```
 
 Configuration
